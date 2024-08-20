@@ -26,4 +26,14 @@ class LoginRequest extends FormRequest
             'password' => 'required|min:6',
         ];
     }
+    public function messages()
+    {
+        return [
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Định dạng email không hợp lệ.',
+            'email.exists' => 'Email không tồn tại trong hệ thống.',
+            'password.required' => 'Vui lòng nhập mật khẩu.',
+            'password.min' => 'Mật khẩu phải chứa ít nhất 6 ký tự.',
+        ];
+    }
 }
