@@ -16,8 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->decimal('price', 15, 2);
-            $table->foreignId('category_id')->constrained()->onDelete('restrict');
-            $table->enum('status', ['default', 'sale'])->default('default');
+            // $table->enum('status', ['default', 'sale'])->default('default');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('option_values', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('option_type_id')->constrained()->onDelete('cascade');
+            $table->enum('type', ['1', '2'])->comment('1:size | 2:color'); // 1 size, 2 color
             $table->string('name'); // ex: option Type 1:size,2:color, values kiểu size M || color: Đen
             $table->timestamps();
             $table->softDeletes();

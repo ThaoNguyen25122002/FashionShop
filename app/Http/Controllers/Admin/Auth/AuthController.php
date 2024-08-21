@@ -14,7 +14,8 @@ class AuthController extends Controller
     //
     public function login(LoginRequest $request){
         if (Auth::attempt($request->only(['email','password']))) {
-            $user = User::where('email', $request->email)->first();
+            // $user = User::where('email', $request->email)->first();
+            $user = Auth::user();
             if ($user->role === 'admin') {
                 $token = $user->createToken('token')->plainTextToken;
                 return response()->json([
@@ -29,7 +30,7 @@ class AuthController extends Controller
             }
         }
         return response()->json([
-            'message' => 'Email or password does not exist',
+            'message' => 'Email or password không đúng!',
         ], 401);
     }
     public function logout(Request $request)

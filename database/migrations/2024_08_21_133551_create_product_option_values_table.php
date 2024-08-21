@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_option_type', function (Blueprint $table) {
-            $table->id();
+        Schema::create('product_option_values', function (Blueprint $table) {
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            $table->foreignId('option_type_id')->constrained()->onDelete('cascade');
-            // Link products với type. Kiểu như products này có type color, size hoặc both
+            $table->foreignId('color_id')->constrained()->onDelete('cascade');
+            $table->foreignId('size_id')->constrained()->onDelete('cascade');
+            $table->primary(['product_id', 'size_id', 'color_id']);
+            $table->unsignedBigInteger('quantity');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_option_type');
+        Schema::dropIfExists('product_option_values');
     }
 };
