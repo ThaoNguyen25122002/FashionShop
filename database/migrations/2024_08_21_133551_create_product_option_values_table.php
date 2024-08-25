@@ -19,8 +19,8 @@ return new class extends Migration
             $table->unsignedBigInteger('quantity');
             // Tạo unique để tránh trùng lặp biến thể
             $table->unique(['product_id', 'color_id', 'size_id']);
-
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
