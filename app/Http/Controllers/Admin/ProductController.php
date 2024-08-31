@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Validator;
 class ProductController extends Controller
 {
     public function index(){
-        $products = Product::with(['categories', 'images', 'variations'])->withSum('variations', 'quantity')->paginate(5); // Lấy sản phẩm kèm hình ảnh
+        $products = Product::with(['categories', 'images', 'variations'])->withSum('variations', 'quantity')->paginate(10); // Lấy sản phẩm kèm hình ảnh
         return ProductResource::collection($products);
     }
     public function show($id)
@@ -36,14 +36,14 @@ class ProductController extends Controller
     $validator = Validator::make($request->all(), [
         'name' => 'required|string|max:255',
         'category_ids' => 'required|array|min:1', 
-        'category_ids.*' => 'integer|exists:categories,id', // Kiểm tra từng phần tử trong mảng
+        'category_ids.*' => 'integer|exists:categories,id', 
         'images' => 'required|array|min:1', 
-        'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048', // Mỗi ảnh phải là file ảnh hợp lệ
-        'price' => 'required|numeric|min:0', // Giá không được để trống và phải là số dương
-        'variations' => 'required|array|min:1', // Ít nhất một variation
-        'variations.*.color' => 'required|string|max:50', // Màu sắc là bắt buộc
-        'variations.*.size' => 'required|string|max:50', // Kích thước là bắt buộc
-        'variations.*.quantity' => 'required|integer|min:1', // Số lượng là bắt buộc, ít nhất là 1
+        'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+        'price' => 'required|numeric|min:0',
+        'variations' => 'required|array|min:1', 
+        'variations.*.color' => 'required|string|max:50',
+        'variations.*.size' => 'required|string|max:50', 
+        'variations.*.quantity' => 'required|integer|min:1', 
     ]);
 
     if($validator->fails()){
@@ -106,7 +106,10 @@ class ProductController extends Controller
             }
         }
         // dd($product);
-        $product->categories()->forceDelete();
+        $product->categories()->detach(); // Xóa quan hệ với các danh mục
+        $product->variations()->forceDelete(); // Xóa hẳn các biến thể của sản phẩm
+
+        // Xóa sản phẩm
         $product->forceDelete();
         
         // $product->delete();
@@ -114,7 +117,10 @@ class ProductController extends Controller
     }
     public function update(Request $request, $id)
     {   
+        dd($request->all());
         // return $request->all();
+        
+        // dd(1);
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'category_ids' => 'required|array|min:1',
@@ -142,7 +148,7 @@ class ProductController extends Controller
     
         $product->categories()->sync($request->category_ids);
     
-        if ($request->has('new_images') && count($request->new_images)) {
+        if ($request->has('new_images') && count($request->new_images)>0) {
             foreach($product->images as $image){
                 $urlCheck = str_replace('uploads/', '', $image->image_url);
                 if ($image->image_url && Storage::disk('public_uploads')->exists($urlCheck)) {
@@ -185,9 +191,7 @@ class ProductController extends Controller
     }
 
 
-    public function test(Request $request, $id){
-        return $request->all();
-    }
+    
 
    
 }

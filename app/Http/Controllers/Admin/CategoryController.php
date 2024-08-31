@@ -14,9 +14,25 @@ class CategoryController extends Controller
         $categories = Category::all();
         return response()->json(['data'=>$categories],200);
     }
+    public function sortCategories(){
+        $categories = Category::orderBy('sort','desc')->take(8)->get();
+        return response()->json(['data'=>$categories],200); 
+    }
     public function getCategory($id){
         $category = Category::findOrFail($id);
         return response()->json(['data'=>$category],200);
+    }
+    public function create(Request $request){
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:100',
+            'is_show' => 'required',
+        ]);
+        if($validator->fails()){
+            return response()->json(['errors'=>$validator->errors()],402);
+        }
+        $category = Category::create($request->all());
+        // $category = Category::findOrFail($id);
+        return response()->json(['data'=>$category],201);
     }
     public function updateCategory(Request $request,$id){
         $validator = Validator::make($request->all(), [
@@ -26,11 +42,6 @@ class CategoryController extends Controller
             return response()->json(['errors'=>$validator->errors()],402);
         }
         $category = Category::findOrFail($id);
-        if (!$category) {
-            return response()->json([
-                'message' => 'Category not found',
-            ], 404);
-        }
         $category->update($request->all());
         return response()->noContent();
     }
