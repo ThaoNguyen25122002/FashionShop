@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('ward')->nullable();
             $table->string('district')->nullable();
             $table->string('city')->nullable();
-            $table->enum('role', ['member', 'admin'])->default('member'); 
+            $table->enum('role', ['member', 'admin'])->default('member');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

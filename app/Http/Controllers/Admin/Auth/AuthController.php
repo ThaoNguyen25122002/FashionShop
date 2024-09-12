@@ -5,19 +5,20 @@ namespace App\Http\Controllers\Admin\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\LoginRequest;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
     //
-    public function login(LoginRequest $request){
-        if (Auth::attempt($request->only(['email','password']))) {
+    public function login(LoginRequest $request)
+    {
+        if (Auth::attempt($request->only(['email', 'password']))) {
             // $user = User::where('email', $request->email)->first();
             $user = Auth::user();
             if ($user->role === 'admin') {
                 $token = $user->createToken('token')->plainTextToken;
+
                 return response()->json([
                     'message' => 'Login successful',
                     'token' => $token,
@@ -29,10 +30,12 @@ class AuthController extends Controller
                 ], 403);
             }
         }
+
         return response()->json([
             'message' => 'Email or password không đúng!',
         ], 401);
     }
+
     public function logout(Request $request)
     {
         // dd($request->user());

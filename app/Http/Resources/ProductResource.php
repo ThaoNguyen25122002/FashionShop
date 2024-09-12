@@ -19,10 +19,10 @@ class ProductResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'price' => $this->price,
-            'images' => $this->images->map(function($image) {
+            'images' => $this->images->map(function ($image) {
                 return [
                     'id' => $image->id,
-                    'image_url' => url($image->image_url), 
+                    'image_url' => url($image->image_url),
                 ];
             }),
             // 'categories' => $this->categories->map(function($category) {
@@ -32,7 +32,7 @@ class ProductResource extends JsonResource
             //     ];
             // }),
             'category_ids' => $this->categories->pluck('id'),
-            'variations' => $this->variations->map(function($variation) {
+            'variations' => $this->variations->map(function ($variation) {
                 return [
                     'color' => $variation->color->name,
                     'size' => $variation->size->name,

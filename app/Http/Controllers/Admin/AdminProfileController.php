@@ -12,22 +12,26 @@ use Illuminate\Support\Facades\Validator;
 class AdminProfileController extends Controller
 {
     //
-    public function index(){
+    public function index()
+    {
         $user = Auth::user();
-        if($user->avatar !== null){
+        if ($user->avatar !== null) {
             $user->avatar = asset($user->avatar);
         }
-        return response()->json(['data'=>$user],200);
+
+        return response()->json(['data' => $user], 200);
     }
-    public function update(Request $request){
+
+    public function update(Request $request)
+    {
         // $user = User::where('email',$request->email)->get();
         $user = Auth::user();
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:50',
-            'new_avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
+            'new_avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
         if ($validator->fails()) {
-            return response()->json(['error'=>$validator->errors()],402);
+            return response()->json(['error' => $validator->errors()], 402);
         }
         // if ($request->hasFile('avatar')) {
         //     if ($user->avatar && Storage::exists($user->avatar)) {
@@ -47,15 +51,16 @@ class AdminProfileController extends Controller
                 Storage::disk('public_uploads')->delete($urlCheck);
             }
             $file = $request->file('new_avatar');
-            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
             $path = $file->storeAs('avatars', $filename, 'public_uploads');
-            $user->avatar = 'uploads/' . $path; 
+            $user->avatar = 'uploads/'.$path;
         }
 
         // dd($request->avatar);
         // return $request->all();
-        $user->update($request->only(['name', 'email','phone','city','district','ward','street_address']));
+        $user->update($request->only(['name', 'phone', 'city', 'district', 'ward', 'street_address']));
         $user->save();
-        return response()->noContent();
+
+        return response()->json(['data' => $user], 200);
     }
 }
